@@ -1,5 +1,6 @@
 package senai.mobile.com.br.tarefa_03.atividades.activities;
 
+import android.app.DownloadManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +30,7 @@ public class MainActivity extends DebugActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        listarAlbums(simpleListView);
     }
 
     public void exibir(Album album) {
@@ -50,7 +51,7 @@ public class MainActivity extends DebugActivity {
         simpleListView.setAdapter(simpleAdapter);
     }
 
-    public void funciona(final View view) {
+    public void listarAlbums(final View view) {
 
         Call<List<Album>> call = new RetrofitConfig().getAlbumService().list();
         call.enqueue(new Callback<List<Album>>() {
@@ -71,4 +72,24 @@ public class MainActivity extends DebugActivity {
 
         });
     }
+
+    public void getAlbumById(View view) {
+
+        Call<Album> call = new RetrofitConfig().getAlbumService().getAlbum(txtIdAlbum.getText().toString());
+        call.enqueue(new Callback<Album>() {
+            @Override
+            public void onResponse(Call<Album> call, Response<Album> response) {
+                Album album = response.body();
+                System.out.println("Album = " + album);
+                exibir(album);
+            }
+
+            @Override
+            public void onFailure(Call<Album> call, Throwable t) {
+
+            }
+        });
+
+    }
+
 }
