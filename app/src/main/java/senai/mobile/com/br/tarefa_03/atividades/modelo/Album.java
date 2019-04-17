@@ -18,7 +18,7 @@ public class Album {
         this.id = id;
     }
 
-    public Integer getUserIdId() {
+    public Integer getUserId() {
         return id;
     }
 

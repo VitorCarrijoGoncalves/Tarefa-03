@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -17,6 +18,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import senai.mobile.com.br.tarefa_03.R;
+import senai.mobile.com.br.tarefa_03.atividades.adapter.AdapterListaAlbum;
 import senai.mobile.com.br.tarefa_03.atividades.modelo.Album;
 import senai.mobile.com.br.tarefa_03.atividades.retrofit.RetrofitConfig;
 
@@ -24,6 +26,7 @@ public class MainActivity extends DebugActivity {
 
     EditText txtIdAlbum;
     ListView simpleListView;
+    private AdapterListaAlbum adapterListaAlbum;
     List<HashMap<String,String>> listAlbums = new ArrayList<>();
 
     @Override
@@ -37,18 +40,10 @@ public class MainActivity extends DebugActivity {
 
         simpleListView=(ListView)findViewById(R.id.simpleListView);
 
-        HashMap<String, String> m = new HashMap();
+        this.adapterListaAlbum = new AdapterListaAlbum(MainActivity.this, this.listAlbums);
 
-        m.put("id", String.valueOf(album.getId()));
-        m.put("userID", String.valueOf(album.getUserIdId()));
-        m.put("title", album.getTitle());
-        listAlbums.add(m);
+        this.simpleListView.setAdapter(this.adapterListaAlbum);
 
-        String[] from={"id", "userID", "title"};
-        int[] to={R.id.list_view_id_album, R.id.list_view_user_id_album, R.id.list_view_title_album};
-
-        SimpleAdapter simpleAdapter = new SimpleAdapter(this, listAlbums, R.layout.activity_list_view, from, to);
-        simpleListView.setAdapter(simpleAdapter);
     }
 
     public void listarAlbums(final View view) {
@@ -80,13 +75,12 @@ public class MainActivity extends DebugActivity {
             @Override
             public void onResponse(Call<Album> call, Response<Album> response) {
                 Album album = response.body();
-                System.out.println("Album = " + album);
                 exibir(album);
             }
 
             @Override
             public void onFailure(Call<Album> call, Throwable t) {
-
+                Log.e("AlbumService   ", "Erro ao buscar o album:" + t.getMessage());
             }
         });
 
